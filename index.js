@@ -49,9 +49,13 @@ app.listen(PORT, () => {
       useNewUrlParser: true,
       useUnifiedTopology: true
     },
-    () => {
-      console.log(`app is running on ${PORT}`);
-      console.log("mongodb is connected!");
+    err => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(`app is running on ${PORT}`);
+        console.log("mongodb is connected!");
+      }
     }
   );
 });
