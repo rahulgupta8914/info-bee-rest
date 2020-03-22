@@ -8,9 +8,8 @@ const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/users.route");
 const postRoutes = require("./routes/posts.route");
 
-const { dbUri } = process.env;
+const { DB_URI } = process.env;
 const PORT = process.env.PORT || 5000;
-
 
 // Start express app
 const app = express();
@@ -47,7 +46,7 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
   mongoose.set("useFindAndModify", false);
   mongoose.connect(
-    dbUri || "mongodb://localhost/info-be-db",
+    DB_URI || "mongodb://localhost/info-be-db",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true

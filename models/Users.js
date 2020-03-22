@@ -35,7 +35,7 @@ User.methods.generateToken = function() {
       name: this.name,
       email: this.email
     },
-    process.env.jwtSecret,
+    process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
 };

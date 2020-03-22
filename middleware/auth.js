@@ -4,7 +4,7 @@ const isAuthenticated = async (req, res, next) => {
   const token = req.cookies["x-access-token"];
   if (token) {
     try {
-      const decode = jwt.verify(token, process.env.jwtSecret);
+      const decode = jwt.verify(token, process.env.JWT_SECRET);
       if (decode) {
         req.user = { _id: decode.id, email: decode.email, name: decode.name };
         const findUser = await User.findOne({
