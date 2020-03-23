@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Joi = require("@hapi/joi");
 
 const CommentSchema = new mongoose.Schema(
   {
@@ -19,4 +20,14 @@ CommentSchema.set("toJSON", {
   }
 });
 const Comment = mongoose.model("Comments", CommentSchema);
-module.exports = { CommentSchema, Comment };
+
+const validateComment = body => {
+  const JoiSechma = Joi.object({
+    comment: Joi.string()
+      .max(3000)
+      .min(1)
+      .required()
+  });
+  return JoiSechma.validate(body);
+};
+module.exports = { CommentSchema, Comment, validateComment };

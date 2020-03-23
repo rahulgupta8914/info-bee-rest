@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { CommentSchema } = require("./Comment");
+const Joi = require("@hapi/joi");
 
 const Post = new mongoose.Schema(
   {
@@ -30,4 +31,18 @@ Post.set("toJSON", {
   }
 });
 
-module.exports = mongoose.model("Post", Post);
+const validatePost = body => {
+  const schema = Joi.object({
+    title: Joi.string()
+      .max(32)
+      .min(1)
+      .required(),
+    description: Joi.string()
+      .max(5000)
+      .min(1)
+      .required()
+  });
+  return schema.validate(body);
+};
+
+module.exports = { Post: mongoose.model("Post", Post), validatePost };

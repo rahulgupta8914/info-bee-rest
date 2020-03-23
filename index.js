@@ -1,10 +1,15 @@
+require("dotenv").config();
 // Import packages
 const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
+
+// error handler route
+const error = require("./middleware/error");
 // import routes
+const validateRoutes = require("./routes/validate.routes");
 const userRoutes = require("./routes/users.route");
 const postRoutes = require("./routes/posts.route");
 
@@ -36,12 +41,15 @@ app.get("/", (req, res) => {
 // extends uris with routes
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
+app.use("/validateToken",validateRoutes);
 
 app.use((req, res, next) => {
-  res.status(400).send({
+  res.status(404).send({
     message: "We don't find you"
   });
 });
+
+app.use(error);
 
 app.listen(PORT, () => {
   mongoose.set("useFindAndModify", false);

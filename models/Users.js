@@ -1,20 +1,20 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Joi = require("@hapi/joi");
 const Schema = mongoose.Schema;
 const saltRounds = bcrypt.genSaltSync(10);
 
 const User = new Schema(
   {
     name: { type: String, default: "No Name", max: 32 },
-    username: { type: String, required: true },
-    email: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true }
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
 
-User.index({ username: 1, email: 1 }, { unique: true });
 // hash user password before saving into database
 User.pre("save", function() {
   this.password = bcrypt.hashSync(this.password, saltRounds);
@@ -40,4 +40,55 @@ User.methods.generateToken = function() {
   );
 };
 
-module.exports = mongoose.model("User", User);
+// validate for sign up
+const validateSignUp = body => {
+  const JoiSchema = Joi.object({
+    username: Joi.string()
+      .max(32)
+      .min(5)
+      .required(),
+    email: Joi.string()
+      .email()
+      .max(32)
+      .min(1)
+      .required(),
+    password: Joi.string()
+      .max(64)
+      .min(6)
+      .required(),
+    confirmPassword: Joi.ref("password"),
+    firstName: Joi.string()
+      .max(32)
+      .min(5)
+      .required(),
+    lastName: Joi.string()
+      .max(32)
+      .min(5)
+      .required()
+  }).with("password", "confirmPassword");
+  return JoiSchema.validate(body);
+};
+// validate for sign in
+const validateSignIn = body => {
+  const JoiSchema = Joi.object({
+    username: Joi.string()
+      .max(32)
+      .min(5)
+      .alphanum(),
+    email: Joi.string()
+      .email()
+      .max(32)
+      .min(1),
+    password: Joi.string()
+      .max(64)
+      .min(6)
+      .required()
+  }).xor("username", "email");
+  return JoiSchema.validate(body);
+};
+
+module.exports = {
+  User: mongoose.model("User", User),
+  validateSignUp,
+  validateSignIn
+};
