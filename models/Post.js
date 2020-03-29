@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { CommentSchema } = require("./Comment");
+const { Comment } = require("./Comment");
 const Joi = require("@hapi/joi");
 
 const Post = new mongoose.Schema(
@@ -11,8 +11,7 @@ const Post = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
-    },
-    comments: [CommentSchema]
+    }
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
@@ -23,6 +22,11 @@ Post.statics.getPosts = function(skip, limit) {
     .limit(limit)
     .sort({ _id: -1 });
 };
+
+Post.pre("remove", async function(next) {
+  await Comment.remove({ post: this._id });
+  next();
+});
 
 Post.set("toJSON", {
   transform: function(doc, ret, opt) {

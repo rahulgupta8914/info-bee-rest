@@ -12,6 +12,7 @@ const error = require("./middleware/error");
 const validateRoutes = require("./routes/validate.routes");
 const userRoutes = require("./routes/users.route");
 const postRoutes = require("./routes/posts.route");
+const commentRoutes = require("./routes/comments.route");
 
 const { DB_URI } = process.env;
 const PORT = process.env.PORT || 5000;
@@ -41,7 +42,8 @@ app.get("/", (req, res) => {
 // extends uris with routes
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
-app.use("/validateToken",validateRoutes);
+app.use("/comments", commentRoutes);
+app.use("/validateToken", validateRoutes);
 
 app.use((req, res, next) => {
   res.status(404).send({

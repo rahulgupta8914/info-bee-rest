@@ -9,6 +9,6 @@ router.post("/", isAuthenticated, postController.createPost);
 
 router.get("/:id", postController.getSinglepost);
 
-router.patch("/:id/comments", isAuthenticated, postController.createComment);
+router.delete("/:id", isAuthenticated, postController.deletePost);
 
 module.exports = router;

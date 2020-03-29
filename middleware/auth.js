@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { User } = require("../models/Users");
+const { Comment } = require("../models/Comment");
+const asyncMiddleWare = require("./async");
+
 const isAuthenticated = async (req, res, next) => {
   const token = req.cookies["x-access-token"];
   if (token) {

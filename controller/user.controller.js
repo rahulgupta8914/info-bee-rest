@@ -41,7 +41,7 @@ exports.signIn = asyncMiddleWare(async (req, res, next) => {
     if (result) {
       return res
         .cookie("x-access-token", findUser.generateToken(), {
-          httpOnly: true
+          httpOnly: true,
         })
         .status(200)
         .json({

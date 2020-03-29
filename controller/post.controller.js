@@ -1,7 +1,5 @@
 const { Post, validatePost } = require("../models/Post");
-const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
-const { Comment, validateComment } = require("../models/Comment");
 const asyncMiddleware = require("../middleware/async");
 
 exports.getPosts = asyncMiddleware(async (req, res, next) => {
@@ -60,29 +58,21 @@ exports.createPost = asyncMiddleware(async (req, res, next) => {
   });
 });
 
-exports.createComment = asyncMiddleware(async (req, res, next) => {
-  const _id = mongoose.Types.ObjectId.isValid(req.params.id);
-  const { error } = validateComment(req.body);
-  if (error) {
-    return res.status(400).json({ message: error.message });
-  }
-  if (_id) {
-    const post = await Post.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        $push: {
-          comments: new Comment({
-            comment: req.body.comment,
-            author: req.user
-          })
-        }
-      },
-      { new: true }
-    );
+exports.deletePost = asyncMiddleware(async (req, res, next) => {
+  const id = req.params.id;
+  if (id) {
+    const post = await Post.findOne({ _id: id });
     if (post) {
-      res.status(201).send({ message: "New Comment added" });
+      if (post.author.toString() === req.user._id.toString()) {
+        await post.remove();
+        return res.status(200).send({ message: "Post deleted!" });
+      } else {
+        return res.status(400).send({ message: "Bad request!" });
+      }
+    } else {
+      return res.status(400).send({ message: "Post not found!" });
     }
   } else {
-    res.status(400).send({ message: "invalid id type id " + _id });
+    return res.status(400).send({ message: "Provide a valid id!" });
   }
 });
