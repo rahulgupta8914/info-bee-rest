@@ -26,8 +26,14 @@ const replyComment = asyncMiddleWare(async (req, res, next) => {
   }
 });
 
-const updateReplyComment = asyncMiddleWare(async (req, res, next) => {});
+const updateReplyComment = asyncMiddleWare(async (req, res, next) => {
+  const commentId = req.params.id;
+  const replyId = req.params.replyId;
+});
 
-const deleteReplyComment = asyncMiddleWare(async (req, res, next) => {});
+const deleteReplyComment = asyncMiddleWare(async (req, res, next) => {
+  const commentId = req.params.id;
+  const replyId = req.params.replyId;
+});
 
 module.exports = { replyComment, updateReplyComment, deleteReplyComment };
