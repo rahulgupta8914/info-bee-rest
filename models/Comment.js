@@ -74,15 +74,29 @@ const validateSubSchema = body => {
     commentId: Joi.string().regex(
       /^[0-9a-fA-F]{24}$/,
       "Commment id should be valid Monogo id"
-    ),
+    ).required(),
     replyTo: Joi.string().regex(
       /^[0-9a-fA-F]{24}$/,
       "mentioned user id should be valid Monogo id"
-    ),
+    ).required(),
     comment: Joi.string()
       .max(1000)
       .min(1)
       .required()
+  });
+  return JoiSechma.validate(body);
+};
+
+const validateSubSchemaDelete = body => {
+  const JoiSechma = Joi.object({
+    commentId: Joi.string().regex(
+      /^[0-9a-fA-F]{24}$/,
+      "Commment id should be valid Monogo id"
+    ).required(),
+    replyId: Joi.string().regex(
+      /^[0-9a-fA-F]{24}$/,
+      "Reply Commment id should be valid Monogo id"
+    ).required(),
   });
   return JoiSechma.validate(body);
 };
@@ -93,5 +107,6 @@ module.exports = {
   SubComment,
   validateComment,
   validateUpdateComment,
-  validateSubSchema
+  validateSubSchema,
+  validateSubSchemaDelete
 };

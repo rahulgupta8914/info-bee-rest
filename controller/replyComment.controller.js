@@ -1,4 +1,9 @@
-const { Comment, validateSubSchema, SubComment } = require("../models/Comment");
+const {
+  Comment,
+  validateSubSchema,
+  SubComment,
+  validateSubSchemaDelete
+} = require("../models/Comment");
 const { User } = require("../models/Users");
 const asyncMiddleWare = require("../middleware/async");
 /* reply */
@@ -34,6 +39,26 @@ const updateReplyComment = asyncMiddleWare(async (req, res, next) => {
 const deleteReplyComment = asyncMiddleWare(async (req, res, next) => {
   const commentId = req.params.id;
   const replyId = req.params.replyId;
+  const { error } = validateSubSchemaDelete({ commentId, replyId });
+  if (error) res.status(400).send({ message: error.message });
+  const findComment = await Comment.findById(commentId).populate("post");
+  const replyComment = findComment.replies.id(replyId);
+  if (findComment && replyComment) {
+    if (
+      findComment.post.author.equals(req.user._id) ||
+      replyComment.author.equals(req.user._id)
+    ) {
+      findComment.replies.id(replyId).remove();
+      await findComment.save();
+      return res.send({ message: "Reply deleted!" });
+    } else {
+      return res
+        .status(400)
+        .send({ message: "You don't have permission to do that!" });
+    }
+  } else {
+    return res.status(400).send({ message: "Comment not found!" });
+  }
 });
 
 module.exports = { replyComment, updateReplyComment, deleteReplyComment };
