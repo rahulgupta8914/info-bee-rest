@@ -34,7 +34,7 @@ exports.signIn = asyncMiddleWare(async (req, res, next) => {
   const findUser = await User.findOne(queryObject);
   if (
     (findUser && findUser.username === username) ||
-    findUser.email === email
+    (findUser && findUser.email === email)
   ) {
     const hashPassword = findUser.password;
     const result = bcrypt.compareSync(password, hashPassword);

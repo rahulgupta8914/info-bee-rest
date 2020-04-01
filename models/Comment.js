@@ -43,6 +43,7 @@ CommentSchema.set("toJSON", {
   }
 });
 const Comment = mongoose.model("Comments", CommentSchema);
+const SubComment = mongoose.model("SubComments", subSchema);
 
 const validateComment = body => {
   const JoiSechma = Joi.object({
@@ -74,7 +75,7 @@ const validateSubSchema = body => {
       /^[0-9a-fA-F]{24}$/,
       "Commment id should be valid Monogo id"
     ),
-    to: Joi.string().regex(
+    replyTo: Joi.string().regex(
       /^[0-9a-fA-F]{24}$/,
       "mentioned user id should be valid Monogo id"
     ),
@@ -89,6 +90,7 @@ const validateSubSchema = body => {
 module.exports = {
   CommentSchema,
   Comment,
+  SubComment,
   validateComment,
   validateUpdateComment,
   validateSubSchema

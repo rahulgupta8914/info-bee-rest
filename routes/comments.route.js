@@ -7,6 +7,4 @@ router.post("/", isAuthenticated, commentController.addComment);
 router.patch("/:id", isAuthenticated, commentController.updateComment);
 router.delete("/:id", isAuthenticated, commentController.deleteComment);
 
-router.post("/:id/reply", isAuthenticated, commentController.replyComment);
-
 module.exports = router;

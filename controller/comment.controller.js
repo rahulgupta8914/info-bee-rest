@@ -2,7 +2,6 @@ const {
   Comment,
   validateComment,
   validateUpdateComment,
-  validateSubSchema
 } = require("../models/Comment");
 const asyncMiddleware = require("../middleware/async");
 const { Post } = require("../models/Post");
@@ -74,12 +73,4 @@ const updateComment = asyncMiddleware(async (req, res, next) => {
   }
 });
 
-/* reply */
-const replyComment = asyncMiddleware(async (req, res, next) => {
-  const commentId = req.params.id;
-  const {error} = validateSubSchema({...req.body,commentId})
-  console.log(commentId)
-  console.log(req.body)
-})
-
-module.exports = { addComment, deleteComment, updateComment, replyComment };
+module.exports = { addComment, deleteComment, updateComment };

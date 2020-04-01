@@ -13,6 +13,7 @@ const validateRoutes = require("./routes/validate.routes");
 const userRoutes = require("./routes/users.route");
 const postRoutes = require("./routes/posts.route");
 const commentRoutes = require("./routes/comments.route");
+const replyCommentRoutes = require("./routes/replyComments.route");
 
 const { DB_URI } = process.env;
 const PORT = process.env.PORT || 5000;
@@ -43,6 +44,7 @@ app.get("/", (req, res) => {
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 app.use("/comments", commentRoutes);
+app.use("/comments/",replyCommentRoutes);
 app.use("/validateToken", validateRoutes);
 
 app.use((req, res, next) => {
