@@ -3,11 +3,11 @@ const postController = require("../controller/post.controller");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/auth");
 
-router.get("/:skip/:limit", postController.getPosts);
+router.get("/:page/:limit", postController.getPosts);
 
 router.post("/", isAuthenticated, postController.createPost);
 
-router.get("/:id", postController.getSinglepost);
+router.get("/:id", postController.getSinglePost);
 
 router.delete("/:id", isAuthenticated, postController.deletePost);
 

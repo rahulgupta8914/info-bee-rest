@@ -2,7 +2,7 @@ const {
   Comment,
   validateSubSchema,
   SubComment,
-  validateSubSchemaDelete
+  validateSubSchemaDeleteUpdate
 } = require("../models/Comment");
 const { User } = require("../models/Users");
 const asyncMiddleWare = require("../middleware/async");
@@ -34,12 +34,13 @@ const replyComment = asyncMiddleWare(async (req, res, next) => {
 const updateReplyComment = asyncMiddleWare(async (req, res, next) => {
   const commentId = req.params.id;
   const replyId = req.params.replyId;
+  // to do
 });
 
 const deleteReplyComment = asyncMiddleWare(async (req, res, next) => {
   const commentId = req.params.id;
   const replyId = req.params.replyId;
-  const { error } = validateSubSchemaDelete({ commentId, replyId });
+  const { error } = validateSubSchemaDeleteUpdate({ commentId, replyId });
   if (error) res.status(400).send({ message: error.message });
   const findComment = await Comment.findById(commentId).populate("post");
   const replyComment = findComment.replies.id(replyId);

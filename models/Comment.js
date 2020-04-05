@@ -87,7 +87,7 @@ const validateSubSchema = body => {
   return JoiSechma.validate(body);
 };
 
-const validateSubSchemaDelete = body => {
+const validateSubSchemaDeleteUpdate = body => {
   const JoiSechma = Joi.object({
     commentId: Joi.string().regex(
       /^[0-9a-fA-F]{24}$/,
@@ -108,5 +108,5 @@ module.exports = {
   validateComment,
   validateUpdateComment,
   validateSubSchema,
-  validateSubSchemaDelete
+  validateSubSchemaDeleteUpdate
 };
