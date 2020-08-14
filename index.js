@@ -2,6 +2,8 @@ require("dotenv").config();
 // Import packages
 const express = require("express");
 const mongoose = require("mongoose");
+const http = require("http")
+const io = require("socket.io")
 const morgan = require("morgan");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
@@ -14,12 +16,14 @@ const userRoutes = require("./routes/users.route");
 const postRoutes = require("./routes/posts.route");
 const commentRoutes = require("./routes/comments.route");
 const replyCommentRoutes = require("./routes/replyComments.route");
+const chatRoutes = require("./routes/chat.route");
 
 const { DB_URI } = process.env;
 const PORT = process.env.PORT || 5000;
 
 // Start express app
 const app = express();
+app.set('port', PORT);
 app.use(helmet());
 app.use(cookieParser());
 
@@ -46,6 +50,7 @@ app.use("/posts", postRoutes);
 app.use("/comments", commentRoutes);
 app.use("/comments/",replyCommentRoutes);
 app.use("/validateToken", validateRoutes);
+app.use("/chats",chatRoutes);
 
 app.use((req, res, next) => {
   res.status(404).send({
@@ -55,21 +60,37 @@ app.use((req, res, next) => {
 
 app.use(error);
 
-app.listen(PORT, () => {
-  mongoose.set("useFindAndModify", false);
-  mongoose.connect(
-    DB_URI || "mongodb://localhost/info-be-db",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    },
-    err => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(`app is running on ${PORT}`);
-        console.log("mongodb is connected!");
-      }
-    }
-  );
-});
+const server = http.createServer(app);
+io.listen(server);
+
+mongoose.set("useFindAndModify", false);
+mongoose
+  .connect( DB_URI , {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Database connected!");
+    server.listen(app.get('port'),() => {
+        console.log('Express server listening on port ' + app.get('port'))
+    });
+  });
+
+// app.listen(PORT, () => {
+//   mongoose.set("useFindAndModify", false);
+//   mongoose.connect(
+//     DB_URI || "mongodb://localhost/info-be-db",
+//     {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true
+//     },
+//     err => {
+//       if (err) {
+//         console.log(err);
+//       } else {
+//         console.log(`app is running on ${PORT}`);
+//         console.log("mongodb is connected!");
+//       }
+//     }
+//   );
+// });

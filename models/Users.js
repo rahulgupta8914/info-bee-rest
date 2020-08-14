@@ -59,11 +59,11 @@ const validateSignUp = body => {
     confirmPassword: Joi.ref("password"),
     firstName: Joi.string()
       .max(32)
-      .min(5)
+      .min(1)
       .required(),
     lastName: Joi.string()
       .max(32)
-      .min(5)
+      .min(1)
       .required()
   }).with("password", "confirmPassword");
   return JoiSchema.validate(body);
