@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const http = require("http")
-const io = require("socket.io")
+const IOWebsocket = require("socket.io")
 const morgan = require("morgan");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
@@ -61,7 +61,15 @@ app.use((req, res, next) => {
 app.use(error);
 
 const server = http.createServer(app);
-io.listen(server);
+const io = IOWebsocket(server)
+
+io.on("connection",()=>{
+  console.log("connected")
+  io.on('chat message', (msg) => {
+    console.log('message: ' + msg);
+  });
+})
+
 
 mongoose.set("useFindAndModify", false);
 mongoose

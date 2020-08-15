@@ -63,13 +63,13 @@ const fetchMessages = asyncMiddleware(async (req, res, next) => {
     // i will add validation later
     const conversationId = "5f367402e9dcd414c6aaf347";
     const resPerPage = 9; // results per page
-    const limit = 2
+    const limit = 1
     const messages = await Message.find({conversation: conversationId})
-    .populate("author")
-    .limit(limit)
-    // .skip((resPerPage * page) - resPerPage)
-    // .sort('-createdAt')
-    res.send({messages})
+    // .populate("author")
+    .limit(2)
+    .skip(2)
+    .sort('-createdAt')
+    res.send({messages: messages.reverse()})
 })
 
 module.exports = { createConversation, getConversationList, sendMessage, fetchMessages };
