@@ -56,3 +56,9 @@ exports.signIn = asyncMiddleWare(async (req, res, next) => {
     return res.status(400).send({ message: "user doesn't exists!" });
   }
 });
+
+exports.signOut = asyncMiddleWare(async (req, res, next) => {
+  res.cookie("x-access-token", "logoutout", { httpOnly: true }).json({
+    message: "Successfully logged out!",
+  });
+})

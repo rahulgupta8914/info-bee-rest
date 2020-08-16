@@ -25,15 +25,17 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 app.set('port', PORT);
 app.use(helmet());
+app.disable('x-powered-by')
 app.use(cookieParser());
-
+// app.use(cors({origin:"http://localhost:3000"}));
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Methods", "GET, PATCH, PUT, POST, DELETE");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, x-authorization, Content-Type, Accept"
   );
+  res.header('Access-Control-Allow-Credentials', true)
   next();
 });
 
@@ -62,7 +64,7 @@ app.use(error);
 
 const server = http.createServer(app);
 const io = IOWebsocket(server)
-
+io.origins('http://localhost:3000') // for latest version
 io.on("connection",()=>{
   console.log("connected")
   io.on('chat message', (msg) => {

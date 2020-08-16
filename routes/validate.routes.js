@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 const { User } = require("../models/Users");
 router.post("/", async (req, res, next) => {
   const token = req.cookies["x-access-token"];
-  // if (token) {
+  if (token) {
   try {
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     if (decode) {
@@ -20,7 +21,7 @@ router.post("/", async (req, res, next) => {
           username: findUser.username,
           name: findUser.name
         };
-        res.status(401).json({ message: "You can log in" });
+        res.status(200).json({ message: "You can log in", token, user: req.user });
       } else {
         res.status(404).json({ message: "This user doesn't exist!" });
       }
@@ -28,11 +29,12 @@ router.post("/", async (req, res, next) => {
       res.status(401).json({ message: "Somthing failed!" });
     }
   } catch (error) {
-    res.status(401).json({ message: error });
+    // console.log(error)
+    res.status(401).json({ message: error.message });
   }
-  // } else {
-  //   res.status(401).json({ message: "You must login first!" });
-  // }
+  } else {
+    res.status(401).json({ message: "You must login first!" });
+  }
 });
 
 module.exports = router;

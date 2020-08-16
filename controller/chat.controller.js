@@ -65,9 +65,9 @@ const fetchMessages = asyncMiddleware(async (req, res, next) => {
     const resPerPage = 9; // results per page
     const limit = 1
     const messages = await Message.find({conversation: conversationId})
-    // .populate("author")
-    .limit(2)
-    .skip(2)
+    .populate("author")
+    // .limit(2)
+    // .skip(2)
     .sort('-createdAt')
     res.send({messages: messages.reverse()})
 })
